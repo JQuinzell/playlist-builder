@@ -35,9 +35,9 @@ export const authRouter = router({
   }),
   getSecretMessage: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
-    const account = await ctx.prisma.account.findFirst({
+    const account = await ctx.prisma.account.findFirstOrThrow({
       where: { userId },
-    })!;
+    });
     const { access_token } = await refreshToken(account?.refresh_token || "");
     console.log(account);
     const Authorization = `${account?.token_type} ${access_token}`;

@@ -21,4 +21,13 @@ export default defineNextConfig({
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        // spotify image cdn
+        hostname: "*.scdn.co",
+      },
+    ],
+  },
 });
