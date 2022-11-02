@@ -14,7 +14,7 @@ const Home: NextPage = () => {
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
       <main className="">
-        <PlaylistPage />
+        <PlaylistModal />
       </main>
     </>
   );
@@ -47,7 +47,7 @@ export default Home;
 //   );
 // };
 
-const PlaylistPage: React.FC = () => {
+const PlaylistModal: React.FC = () => {
   const [search, setSearch] = useState("");
   const response = trpc.spotify.getPlaylists.useQuery();
   const playlists = response.data ?? [];
@@ -90,7 +90,7 @@ const PlaylistPage: React.FC = () => {
                   </figure>
                   <div className="card-body relative flex-initial justify-between p-4">
                     <h3 className="card-title text-base">{playlist.name}</h3>
-                    <button className="btn btn-primary btn-circle invisible absolute bottom-3 right-3 group-hover:visible">
+                    <button className="btn-primary btn-circle btn invisible absolute bottom-3 right-3 group-hover:visible">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
