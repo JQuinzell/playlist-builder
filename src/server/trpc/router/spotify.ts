@@ -34,6 +34,8 @@ const PlaylistSchema = z.object({
   // uri: z.string(),
 });
 
+export type Playlist = z.infer<typeof PlaylistSchema>;
+
 const UserPlaylistsResponse = ResourceResponse.extend({
   items: z.array(PlaylistSchema),
 });

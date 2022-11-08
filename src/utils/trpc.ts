@@ -37,3 +37,6 @@ export const trpc = createTRPCNext<AppRouter>({
  * @example type HelloOutput = AppRouterTypes['example']['hello']['output']
  **/
 export type AppRouterTypes = GetInferenceHelpers<AppRouter>;
+
+export type Playlist =
+  AppRouterTypes["spotify"]["getPlaylists"]["output"][number];
