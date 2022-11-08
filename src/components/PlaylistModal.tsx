@@ -12,7 +12,6 @@ export const PlaylistModal: React.FC<Props> = ({
   open,
   onSelectPlaylist,
 }) => {
-  console.log(`modal is open? ${open}`);
   const [search, setSearch] = useState("");
 
   return (
