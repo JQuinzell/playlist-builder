@@ -20,7 +20,7 @@ export const PlaylistSidebar: React.FC<Props> = ({
   return (
     <div className={`flex h-5/6 w-96 flex-col ${className} mr-4`}>
       <h3 className="m-4 text-2xl">{playlist?.name ?? "Playlist"}</h3>
-      <div className="relative flex grow flex-col place-items-center justify-center overflow-y-scroll rounded-lg bg-base-200 p-4">
+      <div className="relative flex grow flex-col place-items-center justify-start overflow-y-scroll rounded-lg bg-base-200 p-4">
         {data ? (
           <div>
             {data.map(({ track }) => {
@@ -28,10 +28,10 @@ export const PlaylistSidebar: React.FC<Props> = ({
               return (
                 <div
                   key={track.id}
-                  className="group card h-min w-48 place-self-auto rounded-none bg-base-200 shadow-xl hover:bg-base-300"
+                  className="group card mb-4 w-full place-self-auto rounded-none bg-base-200 shadow-xl hover:bg-base-300"
                 >
                   {/* TODO: add a placeholder image? */}
-                  <figure className="h-48 w-full p-5">
+                  <figure className="w-full p-5">
                     {image && (
                       // TODO: how to make next/Image work
                       // eslint-disable-next-line @next/next/no-img-element
