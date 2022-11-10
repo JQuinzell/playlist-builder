@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Playlist } from "../utils/trpc";
+import { TrackCard } from "./TrackCard";
 
 interface Props {
   playlists: Playlist[];
@@ -32,47 +33,29 @@ export const PlaylistModal: React.FC<Props> = ({
           {playlists
             .filter(({ name }) => name.toLocaleLowerCase().includes(search))
             .map((playlist) => {
-              const image = playlist.images[0];
+              const image = playlist.images[0]?.url;
               return (
-                <div
-                  key={playlist.id}
-                  className="group card h-min w-48 place-self-auto rounded-none bg-base-200 shadow-xl hover:bg-base-300"
-                >
-                  {/* TODO: add a placeholder image? */}
-                  <figure className="h-48 w-full p-5">
-                    {image && (
-                      // TODO: how to make next/Image work
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        className="h-full w-full"
-                        src={image.url}
-                        alt={playlist.name}
-                      />
-                    )}
-                  </figure>
-                  <div className="card-body relative flex-initial justify-between p-4">
-                    <h3 className="card-title text-base">{playlist.name}</h3>
-                    <button
-                      onClick={() => onSelectPlaylist(playlist)}
-                      className="btn-primary btn-circle btn invisible absolute bottom-3 right-3 group-hover:visible"
+                <TrackCard image={image} name={playlist.name} key={playlist.id}>
+                  <button
+                    onClick={() => onSelectPlaylist(playlist)}
+                    className="btn-primary btn-circle btn invisible absolute bottom-3 right-3 group-hover:visible"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-6 w-6"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="h-6 w-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </button>
+                </TrackCard>
               );
             })}
         </div>
