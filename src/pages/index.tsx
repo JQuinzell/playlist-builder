@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { PlaylistModal } from "../components/PlaylistModal";
 import { PlaylistSidebar } from "../components/PlaylistSidebar";
+import { SourceSidebar } from "../components/SourceSidebar";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -40,6 +41,7 @@ const Home: NextPage = () => {
           onSelectPlaylist={selectPlaylist}
         />
         <div className="flex h-full">
+          <SourceSidebar className="self-center" />
           <PlaylistSidebar
             className="ml-auto self-center"
             playlist={selectedPlaylist}
