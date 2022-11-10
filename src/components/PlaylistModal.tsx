@@ -35,7 +35,7 @@ export const PlaylistModal: React.FC<Props> = ({
             .map((playlist) => {
               const image = playlist.images[0]?.url;
               return (
-                <TrackCard image={image} name={playlist.name} key={playlist.id}>
+                <TrackCard key={playlist.id} image={image} name={playlist.name}>
                   <button
                     onClick={() => onSelectPlaylist(playlist)}
                     className="btn-primary btn-circle btn invisible absolute bottom-3 right-3 group-hover:visible"
