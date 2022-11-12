@@ -7,6 +7,7 @@ import { PlaylistModal } from "../components/PlaylistModal";
 import { PlaylistSidebar } from "../components/PlaylistSidebar";
 import { SourceSidebar } from "../components/SourceSidebar";
 import { SourceModal } from "../components/SourceModal";
+import { SongBar } from "../components/SongBar";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -28,6 +29,8 @@ const Home: NextPage = () => {
     setSelectedSources(sources);
     setSourcesModalOpen(false);
   }
+
+  console.log({ selectedSources });
 
   return (
     <>
@@ -60,6 +63,7 @@ const Home: NextPage = () => {
             onClickChangePlaylist={() => setModalOpen(true)}
           />
         </div>
+        <SongBar sources={selectedSources ?? []} />
       </main>
     </>
   );

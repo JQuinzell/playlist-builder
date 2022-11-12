@@ -67,23 +67,23 @@ const UserPlaylistsResponse = ResourceResponse.extend({
 
 const TracksSchema = z
   .object({
-    track: z
-      .object({
-        id: z.string(),
-        name: z.string(),
-        album: z.object({
-          images: z.array(
-            z.object({
-              url: z.string(),
-              height: z.number().nullable(),
-              width: z.number().nullable(),
-            })
-          ),
-        }),
-      })
-      .passthrough(),
+    id: z.string(),
+    name: z.string(),
+    album: z.object({
+      images: z.array(
+        z.object({
+          url: z.string(),
+          height: z.number().nullable(),
+          width: z.number().nullable(),
+        })
+      ),
+    }),
   })
   .passthrough();
+
+const TracksRespone = ResourceResponse.extend({
+  items: z.array(TracksSchema),
+});
 
 const SearchResponse = z
   .object({
@@ -93,7 +93,16 @@ const SearchResponse = z
   .passthrough();
 
 const PlaylistTracksResponse = ResourceResponse.extend({
-  items: z.array(TracksSchema),
+  items: z.array(
+    z.object({
+      track: TracksSchema,
+    })
+  ),
+});
+
+const SourceSchema = z.object({
+  id: z.string(),
+  type: z.enum([AlbumSchema.shape.type.value, PlaylistSchema.shape.type.value]),
 });
 
 async function refreshToken(refresh_token: string) {
@@ -189,5 +198,34 @@ export const spotifyRouter = router({
       const json = await spotifyResponse.json();
       const data = PlaylistTracksResponse.parse(json);
       return data.items;
+    }),
+  getSourceTracks: protectedProcedure
+    .input(z.array(SourceSchema))
+    .query(async ({ ctx, input: sources }) => {
+      const userId = ctx.session.user.id;
+      const account = await ctx.prisma.account.findFirstOrThrow({
+        where: { userId },
+      });
+      const { access_token: accessToken } = await refreshToken(
+        account.refresh_token || ""
+      );
+      const params = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      const tracks = await Promise.all(
+        sources.map(async ({ id, type }) => {
+          const spotifyResponse = await fetch(
+            `https://api.spotify.com/v1/${type}s/${id}/tracks`,
+            params
+          );
+          const json = await spotifyResponse.json();
+          console.log(json);
+          // return json;
+          return PlaylistTracksResponse.parse(json);
+        })
+      );
+      return tracks;
     }),
 });

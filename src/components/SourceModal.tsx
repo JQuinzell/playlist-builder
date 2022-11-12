@@ -75,7 +75,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect }) => {
               <TrackCard
                 key={item.id}
                 image={image}
-                name={`${item.name}`}
+                name={`${item.type}: ${item.name}`}
                 selected={selectedIds[item.id]}
               >
                 <button
