@@ -40,3 +40,10 @@ export type AppRouterTypes = GetInferenceHelpers<AppRouter>;
 
 export type Playlist =
   AppRouterTypes["spotify"]["getPlaylists"]["output"][number];
+
+export type Source = Pick<
+  AppRouterTypes["spotify"]["search"]["output"][
+    | "playlists"
+    | "albums"]["items"][number],
+  "type" | "id" | "name" | "images"
+>;

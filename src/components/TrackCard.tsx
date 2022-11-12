@@ -4,11 +4,21 @@ interface Props {
   image?: string;
   name: string;
   children?: ReactNode;
+  selected?: boolean;
 }
 
-export const TrackCard: React.FC<Props> = ({ image, name, children }) => {
+export const TrackCard: React.FC<Props> = ({
+  image,
+  name,
+  selected,
+  children,
+}) => {
   return (
-    <div className="group card mb-4 w-full place-self-auto rounded-none bg-base-200 shadow-xl hover:bg-base-300">
+    <div
+      className={`group card mb-4 w-full place-self-auto rounded-none ${
+        selected ? "bg-primary hover:bg-primary" : "bg-base-300"
+      } shadow-xl hover:bg-base-300`}
+    >
       {/* TODO: add a placeholder image? */}
       <figure className="w-full p-5">
         {image && (

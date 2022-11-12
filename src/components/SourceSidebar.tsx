@@ -1,15 +1,37 @@
 import React from "react";
+import { Source } from "../utils/trpc";
+import { TrackCard } from "./TrackCard";
 import { TrackSideBar } from "./TrackSidebar";
 
 interface Props {
   className: string;
+  sources: Source[];
+  onAddSources: () => void;
 }
 
-export const SourceSidebar: React.FC<Props> = ({ className }) => {
+export const SourceSidebar: React.FC<Props> = ({
+  className,
+  sources,
+  onAddSources,
+}) => {
   return (
     <TrackSideBar className={className} title="Sources">
-      <p className="mt-auto text-lg">Select some sources to get started!</p>
-      <button className="btn-primary btn-circle btn sticky bottom-0 mt-auto place-self-end">
+      {sources.length ? (
+        <div>
+          {sources.map((source) => {
+            const image = source.images[0]?.url;
+            return (
+              <TrackCard key={source.id} name={source.name} image={image} />
+            );
+          })}
+        </div>
+      ) : (
+        <p className="mt-auto text-lg">Select some sources to get started!</p>
+      )}
+      <button
+        className="btn-primary btn-circle btn sticky bottom-0 mt-auto place-self-end"
+        onClick={() => onAddSources()}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -21,7 +43,7 @@ export const SourceSidebar: React.FC<Props> = ({ className }) => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+            d="M12 4.5v15m7.5-7.5h-15"
           />
         </svg>
       </button>

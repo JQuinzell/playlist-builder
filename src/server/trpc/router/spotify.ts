@@ -37,6 +37,28 @@ const PlaylistSchema = z
   // TODO: will probably remove passThrough eventually?
   .passthrough();
 
+const AlbumSchema = z
+  .object({
+    id: z.string(),
+    images: z.array(
+      z.object({
+        url: z.string(),
+        height: z.number().nullable(),
+        width: z.number().nullable(),
+      })
+    ),
+    name: z.string(),
+    // tracks: z.object({href:z.string()}),
+    type: z.literal("album"),
+    // uri: z.string(),
+  })
+  // TODO: will probably remove passThrough eventually?
+  .passthrough();
+
+const AlbumResponse = ResourceResponse.extend({
+  items: z.array(AlbumSchema),
+});
+
 export type Playlist = z.infer<typeof PlaylistSchema>;
 
 const UserPlaylistsResponse = ResourceResponse.extend({
@@ -60,6 +82,13 @@ const TracksSchema = z
         }),
       })
       .passthrough(),
+  })
+  .passthrough();
+
+const SearchResponse = z
+  .object({
+    playlists: UserPlaylistsResponse,
+    albums: AlbumResponse,
   })
   .passthrough();
 
@@ -106,6 +135,30 @@ async function getPlaylists(accessToken: string, accountId: string) {
   return playlists;
 }
 export const spotifyRouter = router({
+  search: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const userId = ctx.session.user.id;
+    const account = await ctx.prisma.account.findFirstOrThrow({
+      where: { userId },
+    });
+    const { access_token: accessToken } = await refreshToken(
+      account.refresh_token || ""
+    );
+    const params = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    const spotifyResponse = await fetch(
+      `https://api.spotify.com/v1/search?${new URLSearchParams({
+        q: input,
+        type: "album,playlist",
+      })}`,
+      params
+    );
+    const data = SearchResponse.parse(await spotifyResponse.json());
+    return data;
+  }),
+
   getPlaylists: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
     const account = await ctx.prisma.account.findFirstOrThrow({
