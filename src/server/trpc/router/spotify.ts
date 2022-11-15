@@ -69,15 +69,6 @@ const TracksSchema = z
   .object({
     id: z.string(),
     name: z.string(),
-    album: z.object({
-      images: z.array(
-        z.object({
-          url: z.string(),
-          height: z.number().nullable(),
-          width: z.number().nullable(),
-        })
-      ),
-    }),
   })
   .passthrough();
 
@@ -95,9 +86,23 @@ const SearchResponse = z
 const PlaylistTracksResponse = ResourceResponse.extend({
   items: z.array(
     z.object({
-      track: TracksSchema,
+      track: TracksSchema.extend({
+        album: z.object({
+          images: z.array(
+            z.object({
+              url: z.string(),
+              height: z.number().nullable(),
+              width: z.number().nullable(),
+            })
+          ),
+        }),
+      }),
     })
   ),
+});
+
+const AlbumTracksResponse = ResourceResponse.extend({
+  items: z.array(TracksSchema),
 });
 
 const SourceSchema = z.object({
@@ -221,11 +226,29 @@ export const spotifyRouter = router({
             params
           );
           const json = await spotifyResponse.json();
-          console.log(json);
-          // return json;
-          return PlaylistTracksResponse.parse(json);
+          if (type === "album") {
+            const albumResponse = await fetch(
+              `https://api.spotify.com/v1/albums/${id}`,
+              params
+            );
+            const album = AlbumSchema.parse(await albumResponse.json());
+            const data = AlbumTracksResponse.parse(json);
+            return data.items.map((item) => ({
+              ...item,
+              images: album.images,
+            }));
+          } else {
+            const data = PlaylistTracksResponse.parse(json);
+            return data.items.map(({ track }) => ({
+              ...track,
+              images: track.album.images,
+            }));
+          }
         })
       );
-      return tracks;
+      const dedupedTracks = new Map(
+        tracks.flat().map((track) => [track.id, track])
+      );
+      return Array.from(dedupedTracks.values());
     }),
 });
