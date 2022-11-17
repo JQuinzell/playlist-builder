@@ -13,8 +13,8 @@ export const TrackReview: React.FC<Props> = ({ track }) => {
         <button className="btn-circle btn h-20 w-20">
           <HiX className="h-20 w-20" />
         </button>
-        <button className="btn-primary btn-circle  btn ml-auto h-20 w-20">
-          <HiPlus className="h-20 w-20 " />
+        <button className="btn-primary btn-circle btn ml-auto h-20 w-20">
+          <HiPlus className="h-20 w-20" />
         </button>
       </div>
     </TrackCard>
