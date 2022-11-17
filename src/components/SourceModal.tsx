@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HiPlus } from "react-icons/hi2";
 import { Source, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 
@@ -52,20 +53,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect }) => {
             className="btn-primary btn-circle btn ml-auto"
             onClick={() => addSelectedSources()}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
+            <HiPlus className="h-6 w-6" />
           </button>
         </div>
         <div className="grid auto-cols-max auto-rows-max grid-cols-4 gap-4 overflow-y-scroll">
@@ -82,20 +70,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect }) => {
                   className="btn-primary btn-circle btn invisible absolute bottom-3 right-3 group-hover:visible"
                   onClick={() => selectSource(item.id)}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
+                  <HiPlus className="h-6 w-6" />
                 </button>
               </TrackCard>
             );
