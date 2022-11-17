@@ -47,3 +47,6 @@ export type Source = Pick<
     | "albums"]["items"][number],
   "type" | "id" | "name" | "images"
 >;
+
+export type Track =
+  AppRouterTypes["spotify"]["getSourceTracks"]["output"][number];

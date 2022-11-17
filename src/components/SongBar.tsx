@@ -1,15 +1,20 @@
 import React from "react";
-import { Source, trpc } from "../utils/trpc";
+import { Source, Track, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 
 interface Props {
   sources: Source[];
+  onSelectTrack: (track: Track) => void;
 }
 
-export const SongBar: React.FC<Props> = ({ sources }) => {
-  const { data } = trpc.spotify.getSourceTracks.useQuery(sources);
+export const SongBar: React.FC<Props> = ({ sources, onSelectTrack }) => {
+  const { data } = trpc.spotify.getSourceTracks.useQuery(sources, {
+    onSuccess(data) {
+      const track = data.at(-1);
+      if (track) onSelectTrack(track);
+    },
+  });
   const items = data ?? [];
-  console.log(items);
   return (
     <div className="flex h-max gap-4 overflow-x-scroll">
       {items.map(({ id, name, images }) => (

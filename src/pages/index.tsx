@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
-import { trpc, Playlist, Source } from "../utils/trpc";
+import { trpc, Playlist, Source, Track } from "../utils/trpc";
 import React, { useState } from "react";
 import { PlaylistModal } from "../components/PlaylistModal";
 import { PlaylistSidebar } from "../components/PlaylistSidebar";
 import { SourceSidebar } from "../components/SourceSidebar";
 import { SourceModal } from "../components/SourceModal";
 import { SongBar } from "../components/SongBar";
+import { TrackReview } from "../components/TrackReview";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [sourcesModalOpen, setSourcesModalOpen] = useState(false);
   const [selectedSources, setSelectedSources] = useState<Source[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const response = trpc.spotify.getPlaylists.useQuery();
   const playlists = response.data ?? [];
 
@@ -57,13 +59,21 @@ const Home: NextPage = () => {
             sources={selectedSources}
             onAddSources={() => setSourcesModalOpen(true)}
           />
+          {currentTrack && (
+            <div className="h-min w-1/2 self-center">
+              <TrackReview track={currentTrack} />
+            </div>
+          )}
           <PlaylistSidebar
             className="ml-auto self-center"
             playlist={selectedPlaylist}
             onClickChangePlaylist={() => setModalOpen(true)}
           />
         </div>
-        <SongBar sources={selectedSources ?? []} />
+        <SongBar
+          sources={selectedSources ?? []}
+          onSelectTrack={(track) => setCurrentTrack(track)}
+        />
       </main>
     </>
   );
