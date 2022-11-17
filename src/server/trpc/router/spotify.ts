@@ -221,14 +221,15 @@ export const spotifyRouter = router({
       };
       const tracks = await Promise.all(
         sources.map(async ({ id, type }) => {
+          //TODO: Probably want a better way to handle this so I don't have load everything at once.
           const spotifyResponse = await fetch(
-            `https://api.spotify.com/v1/${type}s/${id}/tracks`,
+            `https://api.spotify.com/v1/${type}s/${id}/tracks?limit=50`,
             params
           );
           const json = await spotifyResponse.json();
           if (type === "album") {
             const albumResponse = await fetch(
-              `https://api.spotify.com/v1/albums/${id}`,
+              `https://api.spotify.com/v1/albums/${id}?limit=50`,
               params
             );
             const album = AlbumSchema.parse(await albumResponse.json());
