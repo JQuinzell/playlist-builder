@@ -252,4 +252,30 @@ export const spotifyRouter = router({
       );
       return Array.from(dedupedTracks.values());
     }),
+  addTrackToPlaylist: protectedProcedure
+    .input(z.object({ playlistId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const account = await ctx.prisma.account.findFirstOrThrow({
+        where: { userId },
+      });
+      const { access_token: accessToken } = await refreshToken(
+        account.refresh_token || ""
+      );
+      const spotifyResponse = await fetch(
+        `https://api.spotify.com/v1/playlists/${
+          input.playlistId
+        }/tracks?=${new URLSearchParams({
+          uris: `spotify:track:${input.id}`,
+        })}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          method: "POST",
+        }
+      );
+      const data = await spotifyResponse.json();
+      if (data.error) throw new Error(data.error.message);
+    }),
 });

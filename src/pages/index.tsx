@@ -60,7 +60,12 @@ const Home: NextPage = () => {
             onAddSources={() => setSourcesModalOpen(true)}
           />
           <div className="mx-auto w-[28em] self-center">
-            {currentTrack && <TrackReview track={currentTrack} />}
+            {currentTrack && selectedPlaylist && (
+              <TrackReview
+                track={currentTrack}
+                playlistId={selectedPlaylist.id}
+              />
+            )}
           </div>
           <PlaylistSidebar
             className="self-center"
