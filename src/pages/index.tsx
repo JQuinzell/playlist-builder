@@ -55,28 +55,24 @@ const Home: NextPage = () => {
         />
         <div className="flex h-full">
           <SourceSidebar
-            className="self-center"
+            className="mr-auto self-center"
             sources={selectedSources}
             onAddSources={() => setSourcesModalOpen(true)}
           />
-          <div className="mx-auto w-[28em] self-center">
-            {currentTrack && selectedPlaylist && (
-              <TrackReview
-                track={currentTrack}
-                playlistId={selectedPlaylist.id}
-              />
-            )}
-          </div>
+
+          {selectedPlaylist && (
+            <SongBar
+              sources={selectedSources ?? []}
+              playlistId={selectedPlaylist?.id}
+            />
+          )}
+
           <PlaylistSidebar
-            className="self-center"
+            className="ml-auto self-center"
             playlist={selectedPlaylist}
             onClickChangePlaylist={() => setModalOpen(true)}
           />
         </div>
-        <SongBar
-          sources={selectedSources ?? []}
-          onSelectTrack={(track) => setCurrentTrack(track)}
-        />
       </main>
     </>
   );
