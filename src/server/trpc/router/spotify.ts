@@ -205,8 +205,8 @@ export const spotifyRouter = router({
       return data.items;
     }),
   getSourceTracks: protectedProcedure
-    .input(z.array(SourceSchema))
-    .query(async ({ ctx, input: sources }) => {
+    .input(SourceSchema.extend({ cursor: z.number().optional() }))
+    .query(async ({ ctx, input: source }) => {
       const userId = ctx.session.user.id;
       const account = await ctx.prisma.account.findFirstOrThrow({
         where: { userId },
@@ -219,38 +219,40 @@ export const spotifyRouter = router({
           Authorization: `Bearer ${accessToken}`,
         },
       };
-      const tracks = await Promise.all(
-        sources.map(async ({ id, type }) => {
-          //TODO: Probably want a better way to handle this so I don't have load everything at once.
-          const spotifyResponse = await fetch(
-            `https://api.spotify.com/v1/${type}s/${id}/tracks?limit=50`,
-            params
-          );
-          const json = await spotifyResponse.json();
-          if (type === "album") {
-            const albumResponse = await fetch(
-              `https://api.spotify.com/v1/albums/${id}?limit=50`,
-              params
-            );
-            const album = AlbumSchema.parse(await albumResponse.json());
-            const data = AlbumTracksResponse.parse(json);
-            return data.items.map((item) => ({
-              ...item,
-              images: album.images,
-            }));
-          } else {
-            const data = PlaylistTracksResponse.parse(json);
-            return data.items.map(({ track }) => ({
-              ...track,
-              images: track.album.images,
-            }));
-          }
-        })
+      const { type, id, cursor = 0 } = source;
+      const limit = 20;
+      const offset = cursor * limit;
+      const spotifyResponse = await fetch(
+        `https://api.spotify.com/v1/${type}s/${id}/tracks?offset=${offset}&limit=${limit}`,
+        params
       );
-      const dedupedTracks = new Map(
-        tracks.flat().map((track) => [track.id, track])
-      );
-      return Array.from(dedupedTracks.values());
+      const json = await spotifyResponse.json();
+      if (type === "album") {
+        const albumResponse = await fetch(
+          `https://api.spotify.com/v1/albums/${id}?offset=${offset}&limit=${limit}`,
+          params
+        );
+        const album = AlbumSchema.parse(await albumResponse.json());
+        const data = AlbumTracksResponse.parse(json);
+        return {
+          ...data,
+          items: data.items.map((item) => ({
+            ...item,
+            images: album.images,
+          })),
+          next: data.next ? cursor + 1 : undefined,
+        };
+      } else {
+        const data = PlaylistTracksResponse.parse(json);
+        return {
+          ...data,
+          items: data.items.map(({ track }) => ({
+            ...track,
+            images: track.album.images,
+          })),
+          next: data.next ? cursor + 1 : undefined,
+        };
+      }
     }),
   addTrackToPlaylist: protectedProcedure
     .input(z.object({ playlistId: z.string(), id: z.string() }))
