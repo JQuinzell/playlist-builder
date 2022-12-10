@@ -29,6 +29,12 @@ const PlaylistSchema = z
         width: z.number().nullable(),
       })
     ),
+    owner: z.object({
+      display_name: z.string(),
+      id: z.string(),
+      type: z.string(),
+      uri: z.string(),
+    }),
     name: z.string(),
     // tracks: z.object({href:z.string()}),
     type: z.literal("playlist"),
@@ -146,8 +152,9 @@ async function getPlaylists(accessToken: string, accountId: string) {
     playlists.push(...data.items);
     next = data.next;
   } while (next);
-  return playlists;
+  return playlists.filter(({ owner }) => owner.id === accountId);
 }
+
 export const spotifyRouter = router({
   search: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const userId = ctx.session.user.id;
