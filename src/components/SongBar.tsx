@@ -4,21 +4,14 @@ import { TrackCard } from "./TrackCard";
 import { TrackReview } from "./TrackReview";
 
 interface Props {
-  sources: Source[];
+  source: Source;
   playlistId: string;
 }
 
-type CurrentPage = Pick<Source, "id" | "type"> & {
-  cursor: number;
-};
-
-export const SongBar: React.FC<Props> = ({ sources, playlistId }) => {
-  // TODO: how does this respond if props change? I feel like the query might get a bit confused
-  const startPage = sources[0];
-  // TODO: is there a better way to handle this? enabled prevents undefined from ever being passed but I don't like this design
+export const SongBar: React.FC<Props> = ({ source, playlistId }) => {
   const { data, hasNextPage, fetchNextPage } =
-    trpc.spotify.getSourceTracks.useInfiniteQuery(startPage!, {
-      enabled: !!startPage,
+    trpc.spotify.getSourceTracks.useInfiniteQuery(source, {
+      enabled: !!source,
       getNextPageParam(lastPage) {
         return lastPage.next;
       },

@@ -7,13 +7,15 @@ import { TrackSideBar } from "./TrackSidebar";
 interface Props {
   className: string;
   sources: Source[];
-  onAddSources: () => void;
+  onClickAdd: () => void;
+  onClickShow: (source: Source) => void;
 }
 
 export const SourceSidebar: React.FC<Props> = ({
   className,
   sources,
-  onAddSources,
+  onClickAdd,
+  onClickShow,
 }) => {
   return (
     <TrackSideBar className={className} title="Sources">
@@ -22,7 +24,16 @@ export const SourceSidebar: React.FC<Props> = ({
           {sources.map((source) => {
             const image = source.images[0]?.url;
             return (
-              <TrackCard key={source.id} name={source.name} image={image} />
+              <TrackCard key={source.id} name={source.name} image={image}>
+                <div className="flex">
+                  <button
+                    onClick={() => onClickShow(source)}
+                    className="btn-primary btn-circle btn ml-auto"
+                  >
+                    <HiPlus className="h-6 w-6" />
+                  </button>
+                </div>
+              </TrackCard>
             );
           })}
         </div>
@@ -31,7 +42,7 @@ export const SourceSidebar: React.FC<Props> = ({
       )}
       <button
         className="btn-primary btn-circle btn sticky bottom-0 mt-auto place-self-end"
-        onClick={() => onAddSources()}
+        onClick={() => onClickAdd()}
       >
         <HiPlus className="h-6 w-6" />
       </button>

@@ -17,8 +17,9 @@ const Home: NextPage = () => {
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [sourcesModalOpen, setSourcesModalOpen] = useState(false);
-  const [selectedSources, setSelectedSources] = useState<Source[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [selectedSources, setSelectedSources] = useState<
+    Array<Source & { current: boolean }>
+  >([]);
   const response = trpc.spotify.getPlaylists.useQuery();
   const playlists = response.data ?? [];
 
@@ -28,11 +29,22 @@ const Home: NextPage = () => {
   }
 
   function selectSources(sources: Source[]) {
-    setSelectedSources(sources);
+    setSelectedSources(
+      sources.map((source, i) => ({ ...source, current: i === 0 }))
+    );
     setSourcesModalOpen(false);
   }
 
-  console.log({ selectedSources });
+  function showSource(source: Source) {
+    setSelectedSources((prev) =>
+      prev.map((prevSource) => ({
+        ...prevSource,
+        current: prevSource.id === source.id,
+      }))
+    );
+  }
+
+  const currentSource = selectedSources.find(({ current }) => current);
 
   return (
     <>
@@ -57,14 +69,12 @@ const Home: NextPage = () => {
           <SourceSidebar
             className="mr-auto self-center"
             sources={selectedSources}
-            onAddSources={() => setSourcesModalOpen(true)}
+            onClickAdd={() => setSourcesModalOpen(true)}
+            onClickShow={showSource}
           />
 
-          {selectedPlaylist && (
-            <SongBar
-              sources={selectedSources ?? []}
-              playlistId={selectedPlaylist?.id}
-            />
+          {selectedPlaylist && currentSource && (
+            <SongBar source={currentSource} playlistId={selectedPlaylist?.id} />
           )}
 
           <PlaylistSidebar
