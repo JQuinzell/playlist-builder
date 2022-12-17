@@ -49,4 +49,4 @@ export type Source = Pick<
 >;
 
 export type Track =
-  AppRouterTypes["spotify"]["getSourceTracks"]["output"][number];
+  AppRouterTypes["spotify"]["getSourceTracks"]["output"]["items"][number];
