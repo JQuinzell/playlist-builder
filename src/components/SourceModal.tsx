@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi2";
 import { Source, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
+import { useDebounce } from "../utils/useDebounce";
 
 interface Props {
   open: boolean;
@@ -11,12 +12,13 @@ interface Props {
 
 export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
   const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce(search, 500);
 
   const [selectedIds, setSelectedIds] = useState<
     Record<string, boolean | undefined>
   >({});
 
-  const { data } = trpc.spotify.search.useQuery(search, {
+  const { data } = trpc.spotify.search.useQuery(debouncedSearch, {
     enabled: search !== "",
   });
 
