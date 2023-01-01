@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiPlus, HiXMark } from "react-icons/hi2";
 import type { Playlist } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
@@ -17,6 +17,20 @@ export const PlaylistModal: React.FC<Props> = ({
   onClose,
 }) => {
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        console.log("ESCAPING PL");
+        onClose();
+      }
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose, open]);
 
   return (
     <div className={`modal ${open ? "modal-open" : ""}`}>

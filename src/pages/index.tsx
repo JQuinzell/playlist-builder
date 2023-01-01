@@ -58,7 +58,11 @@ const Home: NextPage = () => {
             Log in
           </button>
         )}
-        <SourceModal open={sourcesModalOpen} onSelect={selectSources} />
+        <SourceModal
+          open={sourcesModalOpen}
+          onSelect={selectSources}
+          onClose={() => setSourcesModalOpen(false)}
+        />
         <PlaylistModal
           open={modalOpen}
           playlists={playlists}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi2";
 import { Source, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
@@ -6,16 +6,33 @@ import { TrackCard } from "./TrackCard";
 interface Props {
   open: boolean;
   onSelect: (source: Source[]) => void;
+  onClose: () => void;
 }
 
-export const SourceModal: React.FC<Props> = ({ open, onSelect }) => {
+export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
   const [search, setSearch] = useState<string>("");
+
   const [selectedIds, setSelectedIds] = useState<
     Record<string, boolean | undefined>
   >({});
+
   const { data } = trpc.spotify.search.useQuery(search, {
     enabled: search !== "",
   });
+
+  useEffect(() => {
+    if (!open) return;
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        console.log("ESCAPING SOURCE");
+        onClose();
+      }
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose, open]);
 
   const items = data
     ? [...data.albums.items, ...data.playlists.items].sort((a, b) =>
