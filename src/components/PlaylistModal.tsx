@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HiPlus } from "react-icons/hi2";
+import { HiPlus, HiXMark } from "react-icons/hi2";
 import type { Playlist } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 
@@ -7,12 +7,14 @@ interface Props {
   playlists: Playlist[];
   open: boolean;
   onSelectPlaylist: (playlist: Playlist) => void;
+  onClose: () => void;
 }
 
 export const PlaylistModal: React.FC<Props> = ({
   playlists,
   open,
   onSelectPlaylist,
+  onClose,
 }) => {
   const [search, setSearch] = useState("");
 
@@ -29,6 +31,12 @@ export const PlaylistModal: React.FC<Props> = ({
               setSearch(e.currentTarget.value.toLocaleLowerCase())
             }
           />
+          <button
+            className="btn-primary btn-circle btn ml-auto"
+            onClick={() => onClose()}
+          >
+            <HiXMark className="h-6 w-6" />
+          </button>
         </div>
         <div className="grid auto-cols-max auto-rows-max grid-cols-4 gap-4 overflow-y-scroll">
           {playlists

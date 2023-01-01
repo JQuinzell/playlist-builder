@@ -1,14 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
-import { trpc, Playlist, Source, Track } from "../utils/trpc";
+import { trpc, Playlist, Source } from "../utils/trpc";
 import React, { useState } from "react";
 import { PlaylistModal } from "../components/PlaylistModal";
 import { PlaylistSidebar } from "../components/PlaylistSidebar";
 import { SourceSidebar } from "../components/SourceSidebar";
 import { SourceModal } from "../components/SourceModal";
 import { SongBar } from "../components/SongBar";
-import { TrackReview } from "../components/TrackReview";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -64,6 +63,7 @@ const Home: NextPage = () => {
           open={modalOpen}
           playlists={playlists}
           onSelectPlaylist={selectPlaylist}
+          onClose={() => setModalOpen(false)}
         />
         <div className="flex h-full">
           <SourceSidebar
