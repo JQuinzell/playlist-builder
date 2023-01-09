@@ -1,5 +1,5 @@
 import React from "react";
-import { HiPlus } from "react-icons/hi2";
+import { HiArrowRight, HiPlus } from "react-icons/hi2";
 import { Source } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { TrackSideBar } from "./TrackSidebar";
@@ -30,7 +30,7 @@ export const SourceSidebar: React.FC<Props> = ({
                     onClick={() => onClickShow(source)}
                     className="btn-primary btn-circle btn ml-auto"
                   >
-                    <HiPlus className="h-6 w-6" />
+                    <HiArrowRight className="h-6 w-6" />
                   </button>
                 </div>
               </TrackCard>
