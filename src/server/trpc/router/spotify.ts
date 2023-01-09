@@ -117,26 +117,6 @@ const SourceSchema = z.object({
   type: z.enum([AlbumSchema.shape.type.value, PlaylistSchema.shape.type.value]),
 });
 
-async function refreshToken(refresh_token: string) {
-  const res = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(
-        `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
-      ).toString("base64")}`,
-    },
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token,
-    }),
-  });
-  const data = await res.json();
-  // console.log("refresh response");
-  // console.log(data);
-  return TokenResponse.parse(data);
-}
-
 async function getPlaylists(accessToken: string, accountId: string) {
   const params = {
     headers: {
@@ -158,16 +138,9 @@ async function getPlaylists(accessToken: string, accountId: string) {
 
 export const spotifyRouter = router({
   search: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    const userId = ctx.session.user.id;
-    const account = await ctx.prisma.account.findFirstOrThrow({
-      where: { userId },
-    });
-    const { access_token: accessToken } = await refreshToken(
-      account.refresh_token || ""
-    );
     const params = {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${ctx.session.accessToken}`,
       },
     };
     const spotifyResponse = await fetch(
@@ -186,22 +159,14 @@ export const spotifyRouter = router({
     const account = await ctx.prisma.account.findFirstOrThrow({
       where: { userId },
     });
-    const { access_token } = await refreshToken(account.refresh_token || "");
-    return getPlaylists(access_token, account.providerAccountId);
+    return getPlaylists(ctx.session.accessToken, account.providerAccountId);
   }),
   getPlaylistTracks: protectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
-      const account = await ctx.prisma.account.findFirstOrThrow({
-        where: { userId },
-      });
-      const { access_token: accessToken } = await refreshToken(
-        account.refresh_token || ""
-      );
       const params = {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${ctx.session.accessToken}`,
         },
       };
       const spotifyResponse = await fetch(
@@ -215,16 +180,9 @@ export const spotifyRouter = router({
   getSourceTracks: protectedProcedure
     .input(SourceSchema.extend({ cursor: z.number().optional() }))
     .query(async ({ ctx, input: source }) => {
-      const userId = ctx.session.user.id;
-      const account = await ctx.prisma.account.findFirstOrThrow({
-        where: { userId },
-      });
-      const { access_token: accessToken } = await refreshToken(
-        account.refresh_token || ""
-      );
       const params = {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${ctx.session.accessToken}`,
         },
       };
       const { type, id, cursor = 0 } = source;
@@ -265,13 +223,6 @@ export const spotifyRouter = router({
   addTrackToPlaylist: protectedProcedure
     .input(z.object({ playlistId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
-      const account = await ctx.prisma.account.findFirstOrThrow({
-        where: { userId },
-      });
-      const { access_token: accessToken } = await refreshToken(
-        account.refresh_token || ""
-      );
       const spotifyResponse = await fetch(
         `https://api.spotify.com/v1/playlists/${
           input.playlistId
@@ -280,7 +231,7 @@ export const spotifyRouter = router({
         })}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${ctx.session.accessToken}`,
           },
           method: "POST",
         }
