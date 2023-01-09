@@ -24,6 +24,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
 
   const handleClose = useCallback(() => {
     setSearch("");
+    setSelectedIds({});
     onClose();
   }, [onClose]);
 
@@ -56,6 +57,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
 
   function addSelectedSources() {
     const sources = items.filter(({ id }) => selectedIds[id]);
+    handleClose();
     onSelect(sources);
   }
 
