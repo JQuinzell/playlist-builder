@@ -22,6 +22,7 @@ const PlaylistSchema = z
     external_urls: z.object({ spotify: z.string() }),
     href: z.string(),
     id: z.string(),
+    snapshot_id: z.string(),
     images: z.array(
       z.object({
         url: z.string(),
@@ -288,15 +289,25 @@ export const spotifyRouter = router({
       if (data.error) throw new Error(data.error.message);
     }),
   removeTrackToPlaylist: protectedProcedure
-    .input(z.object({ playlistId: z.string(), id: z.string() }))
+    .input(
+      z.object({
+        playlistId: z.string(),
+        trackId: z.string(),
+        snapshotId: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const spotifyResponse = await fetch(
-        `https://api.spotify.com/v1/playlists/${
-          input.playlistId
-        }/tracks?=${new URLSearchParams({
-          uris: `spotify:track:${input.id}`,
-        })}`,
+        `https://api.spotify.com/v1/playlists/${input.playlistId}/tracks`,
         {
+          body: JSON.stringify({
+            tracks: [
+              {
+                uri: `spotify:track:${input.trackId}`,
+              },
+            ],
+            snapshot_id: input.snapshotId,
+          }),
           headers: {
             Authorization: `Bearer ${ctx.session.accessToken}`,
           },
