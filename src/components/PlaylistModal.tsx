@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiPlus, HiXMark } from "react-icons/hi2";
 import type { Playlist } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
@@ -17,6 +17,7 @@ export const PlaylistModal: React.FC<Props> = ({
   onClose,
 }) => {
   const [search, setSearch] = useState("");
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -33,7 +34,13 @@ export const PlaylistModal: React.FC<Props> = ({
   }, [onClose, open]);
 
   return (
-    <div className={`modal ${open ? "modal-open" : ""}`}>
+    <div
+      ref={modalRef}
+      className={`modal ${open ? "modal-open" : ""}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="modal-box flex h-5/6 w-11/12 max-w-5xl flex-col overflow-hidden">
         <div className="mb-5 flex items-baseline">
           <h2 className="mr-5 text-xl font-bold">Playlists</h2>

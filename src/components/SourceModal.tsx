@@ -26,7 +26,6 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
     if (!open) return;
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        console.log("ESCAPING SOURCE");
         onClose();
       }
     }
@@ -56,7 +55,12 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
   }
 
   return (
-    <div className={`modal ${open ? "modal-open" : ""}`}>
+    <div
+      className={`modal ${open ? "modal-open" : ""}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="modal-box flex h-5/6 w-11/12 max-w-5xl flex-col overflow-hidden">
         <div className="mb-5 flex items-baseline">
           <h2 className="mr-5 text-xl font-bold">Sources</h2>
