@@ -20,10 +20,7 @@ async function refreshToken(refresh_token: string) {
       refresh_token,
     }),
   });
-  console.log();
   const data = await res.json();
-  console.log("refresh response");
-  console.log(data);
   return SpotifyTokenResponse.parse(data);
 }
 

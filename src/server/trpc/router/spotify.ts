@@ -287,4 +287,23 @@ export const spotifyRouter = router({
       const data = await spotifyResponse.json();
       if (data.error) throw new Error(data.error.message);
     }),
+  removeTrackToPlaylist: protectedProcedure
+    .input(z.object({ playlistId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const spotifyResponse = await fetch(
+        `https://api.spotify.com/v1/playlists/${
+          input.playlistId
+        }/tracks?=${new URLSearchParams({
+          uris: `spotify:track:${input.id}`,
+        })}`,
+        {
+          headers: {
+            Authorization: `Bearer ${ctx.session.accessToken}`,
+          },
+          method: "DELETE",
+        }
+      );
+      const data = await spotifyResponse.json();
+      if (data.error) throw new Error(data.error.message);
+    }),
 });
