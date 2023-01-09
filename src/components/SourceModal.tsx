@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi2";
 import { Source, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
@@ -22,18 +22,23 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
     enabled: search !== "",
   });
 
+  const handleClose = useCallback(() => {
+    setSearch("");
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
       }
     }
     document.addEventListener("keydown", handleEscape);
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [onClose, open]);
+  }, [handleClose, open]);
 
   const items = data
     ? [...data.albums.items, ...data.playlists.items].sort((a, b) =>
@@ -58,10 +63,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
     <div
       className={`modal ${open ? "modal-open" : ""}`}
       onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          setSearch("");
-          onClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
       }}
     >
       <div className="modal-box flex h-5/6 w-11/12 max-w-5xl flex-col overflow-hidden">
