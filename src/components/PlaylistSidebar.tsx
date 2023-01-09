@@ -1,7 +1,7 @@
 import { Playlist, trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { TrackSideBar } from "./TrackSidebar";
-import { HiArrowPath } from "react-icons/hi2";
+import { HiArrowPath, HiPlus } from "react-icons/hi2";
 interface Props {
   className?: string;
   onClickChangePlaylist: () => void;
@@ -33,7 +33,11 @@ export const PlaylistSidebar: React.FC<Props> = ({
         className="btn-primary btn-circle btn sticky bottom-0 mt-auto place-self-end"
         onClick={() => onClickChangePlaylist()}
       >
-        <HiArrowPath className="h-6 w-6" />
+        {playlist ? (
+          <HiArrowPath className="h-6 w-6" />
+        ) : (
+          <HiPlus className="h-6 w-6" />
+        )}
       </button>
     </TrackSideBar>
   );
