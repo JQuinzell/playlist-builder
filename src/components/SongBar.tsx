@@ -36,7 +36,7 @@ export const SongBar: React.FC<Props> = ({ source, playlistId }) => {
   }
   return (
     <div
-      className="flex h-full flex-col gap-4 overflow-y-scroll"
+      className="flex h-full w-96 flex-col gap-4 overflow-y-scroll"
       onScroll={handleScroll}
     >
       {items
