@@ -43,6 +43,10 @@ const Home: NextPage = () => {
     );
   }
 
+  function removeSource(source: Source) {
+    setSelectedSources((prev) => prev.filter(({ id }) => id !== source.id));
+  }
+
   const currentSource = selectedSources.find(({ current }) => current);
 
   return (
@@ -75,6 +79,7 @@ const Home: NextPage = () => {
             sources={selectedSources}
             onClickAdd={() => setSourcesModalOpen(true)}
             onClickShow={showSource}
+            onRemoveSource={removeSource}
           />
 
           {selectedPlaylist && currentSource && (

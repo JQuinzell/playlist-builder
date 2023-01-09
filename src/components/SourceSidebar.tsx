@@ -1,5 +1,5 @@
 import React from "react";
-import { HiArrowRight, HiPlus } from "react-icons/hi2";
+import { HiArrowRight, HiPlus, HiXMark } from "react-icons/hi2";
 import { Source } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { TrackSideBar } from "./TrackSidebar";
@@ -9,6 +9,7 @@ interface Props {
   sources: Source[];
   onClickAdd: () => void;
   onClickShow: (source: Source) => void;
+  onRemoveSource: (source: Source) => void;
 }
 
 export const SourceSidebar: React.FC<Props> = ({
@@ -16,6 +17,7 @@ export const SourceSidebar: React.FC<Props> = ({
   sources,
   onClickAdd,
   onClickShow,
+  onRemoveSource,
 }) => {
   return (
     <TrackSideBar className={className} title="Sources">
@@ -26,6 +28,12 @@ export const SourceSidebar: React.FC<Props> = ({
             return (
               <TrackCard key={source.id} name={source.name} image={image}>
                 <div className="flex">
+                  <button
+                    onClick={() => onRemoveSource(source)}
+                    className="btn-danger btn-circle btn"
+                  >
+                    <HiXMark className="h-6 w-6" />
+                  </button>
                   <button
                     onClick={() => onClickShow(source)}
                     className="btn-primary btn-circle btn ml-auto"
