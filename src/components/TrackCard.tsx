@@ -15,9 +15,9 @@ export const TrackCard: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={`group card mb-4 w-full place-self-auto rounded-none ${
-        selected ? "bg-primary hover:bg-primary" : "bg-base-300"
-      } shadow-xl hover:bg-base-300`}
+      className={`group card mb-4 w-full place-self-auto rounded-none shadow-xl ${
+        selected ? "bg-primary" : "bg-base-300"
+      }`}
     >
       {/* TODO: add a placeholder image? */}
       <figure className="w-full p-5">
