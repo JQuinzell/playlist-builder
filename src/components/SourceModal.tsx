@@ -58,7 +58,10 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
     <div
       className={`modal ${open ? "modal-open" : ""}`}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) {
+          setSearch("");
+          onClose();
+        }
       }}
     >
       <div className="modal-box flex h-5/6 w-11/12 max-w-5xl flex-col overflow-hidden">
@@ -66,6 +69,7 @@ export const SourceModal: React.FC<Props> = ({ open, onSelect, onClose }) => {
           <h2 className="mr-5 text-xl font-bold">Sources</h2>
           <input
             type="text"
+            value={search}
             placeholder="Search for a source"
             className="input-bordered input w-full max-w-xs"
             onChange={(e) =>
