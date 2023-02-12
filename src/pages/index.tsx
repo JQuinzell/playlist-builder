@@ -21,6 +21,8 @@ const Home: NextPage = () => {
   >([]);
   const response = trpc.spotify.getPlaylists.useQuery();
   const playlists = response.data ?? [];
+  const stuff = trpc.spotify.getRecentlyPlayed.useQuery();
+  console.log({ data: stuff.data });
 
   function selectPlaylist(playlist: Playlist) {
     setModalOpen(false);

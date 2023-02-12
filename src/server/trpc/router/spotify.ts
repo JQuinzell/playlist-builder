@@ -79,9 +79,21 @@ const TracksSchema = z
   })
   .passthrough();
 
-const TracksRespone = ResourceResponse.extend({
-  items: z.array(TracksSchema),
+const HistoryItem = z.object({
+  context: z.object({
+    type: z.enum(["playlist", "album", "artist", "show"]),
+    href: z.string(),
+  }),
+  track: TracksSchema,
 });
+
+const HistoryResponse = z.object({
+  items: z.array(HistoryItem),
+});
+
+// const TracksRespone = ResourceResponse.extend({
+//   items: z.array(TracksSchema),
+// });
 
 const SearchResponse = z
   .object({
@@ -268,4 +280,21 @@ export const spotifyRouter = router({
       const data = await spotifyResponse.json();
       if (data.error) throw new Error(data.error.message);
     }),
+  getRecentlyPlayed: protectedProcedure.query(async ({ ctx }) => {
+    const spotifyResponse = await fetch(
+      `https://api.spotify.com/v1/me/player/recently-played?${new URLSearchParams(
+        {
+          limit: "50",
+          before: Date.now().toString(),
+        }
+      )}`,
+      {
+        headers: {
+          Authorization: `Bearer ${ctx.session.accessToken}`,
+        },
+      }
+    );
+    const data = HistoryResponse.parse(await spotifyResponse.json());
+    return data.items;
+  }),
 });

@@ -10,6 +10,7 @@ const scope = [
   // "user-read-email",
   "playlist-read-private",
   "playlist-modify-private",
+  "user-read-recently-played",
 ].join(",");
 
 export const authOptions: NextAuthOptions = {
