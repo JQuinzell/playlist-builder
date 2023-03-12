@@ -1,16 +1,20 @@
 import React from "react";
-import { Track, trpc } from "../utils/trpc";
+import { trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { HiXMark, HiCheck } from "react-icons/hi2";
+import { Image, Track } from "../server/trpc/router/schemas";
 
 interface Props {
   track: Track;
+  images: Image[];
   playlistId: string;
   onAdd: () => void;
   onRemove: () => void;
 }
+
 export const TrackReview: React.FC<Props> = ({
   track,
+  images,
   playlistId,
   onAdd,
   onRemove,
@@ -32,7 +36,7 @@ export const TrackReview: React.FC<Props> = ({
   }
 
   return (
-    <TrackCard image={track.images[0]?.url} name={track.name}>
+    <TrackCard image={images[0]?.url} name={track.name}>
       <div className="flex">
         <button className="btn-circle btn h-20 w-20">
           <HiXMark className="h-20 w-20" onClick={onClickRemove} />

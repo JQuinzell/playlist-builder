@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
-import { trpc, Playlist, Source } from "../utils/trpc";
+import { trpc, Playlist } from "../utils/trpc";
 import React, { useState } from "react";
 import { PlaylistModal } from "../components/PlaylistModal";
 import { PlaylistSidebar } from "../components/PlaylistSidebar";
 import { SourceSidebar } from "../components/SourceSidebar";
 import { SourceModal } from "../components/SourceModal";
 import { SongBar } from "../components/SongBar";
+import { Source } from "../server/trpc/router/schemas";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -21,8 +22,6 @@ const Home: NextPage = () => {
   >([]);
   const response = trpc.spotify.getPlaylists.useQuery();
   const playlists = response.data ?? [];
-  const stuff = trpc.spotify.getRecentlyPlayed.useQuery();
-  console.log({ data: stuff.data });
 
   function selectPlaylist(playlist: Playlist) {
     setModalOpen(false);

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi2";
-import { Source, trpc } from "../utils/trpc";
+import { trpc } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { useDebounce } from "../utils/useDebounce";
+import { Source } from "../server/trpc/router/schemas";
 
 interface Props {
   open: boolean;

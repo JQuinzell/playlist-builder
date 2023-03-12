@@ -1,8 +1,8 @@
 import React from "react";
 import { HiArrowRight, HiPlus, HiXMark } from "react-icons/hi2";
-import { Source } from "../utils/trpc";
 import { TrackCard } from "./TrackCard";
 import { TrackSideBar } from "./TrackSidebar";
+import { Source } from "../server/trpc/router/schemas";
 
 interface Props {
   className: string;

@@ -5,11 +5,11 @@ import {
   UserPlaylistsResponse,
   SearchResponse,
   PlaylistTracksResponse,
-  SourceSchema,
-  AlbumSchema,
   AlbumTracksResponse,
   HistoryResponse,
-} from "./schemas.js";
+  TracksResponse,
+  SourceInputSchema,
+} from "./schemas";
 
 async function getPlaylists(accessToken: string, accountId: string) {
   const params = {
@@ -72,7 +72,8 @@ export const spotifyRouter = router({
       return data.items;
     }),
   getSourceTracks: protectedProcedure
-    .input(SourceSchema.extend({ cursor: z.number().optional() }))
+    .input(SourceInputSchema.extend({ cursor: z.number().optional() }))
+    .output(TracksResponse.extend({ next: z.number().optional() }))
     .query(async ({ ctx, input: source }) => {
       const params = {
         headers: {
@@ -88,28 +89,17 @@ export const spotifyRouter = router({
       );
       const json = await spotifyResponse.json();
       if (type === "album") {
-        const albumResponse = await fetch(
-          `https://api.spotify.com/v1/albums/${id}?offset=${offset}&limit=${limit}`,
-          params
-        );
-        const album = AlbumSchema.parse(await albumResponse.json());
         const data = AlbumTracksResponse.parse(json);
         return {
           ...data,
-          items: data.items.map((item) => ({
-            ...item,
-            images: album.images,
-          })),
           next: data.next ? cursor + 1 : undefined,
         };
       } else {
         const data = PlaylistTracksResponse.parse(json);
+        const items = data.items.map(({ track }) => track);
         return {
           ...data,
-          items: data.items.map(({ track }) => ({
-            ...track,
-            images: track.album.images,
-          })),
+          items,
           next: data.next ? cursor + 1 : undefined,
         };
       }

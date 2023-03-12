@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Source, Track, trpc } from "../utils/trpc";
-import { TrackCard } from "./TrackCard";
+import React, { useState } from "react";
+import { Track, trpc } from "../utils/trpc";
 import { TrackReview } from "./TrackReview";
+import { Source } from "../server/trpc/router/schemas";
 
 interface Props {
   source: Source;
@@ -34,6 +34,7 @@ export const SongBar: React.FC<Props> = ({ source, playlistId }) => {
       fetchNextPage();
     }
   }
+
   return (
     <div
       className="flex h-full w-96 flex-col gap-4 overflow-y-scroll"
@@ -45,6 +46,7 @@ export const SongBar: React.FC<Props> = ({ source, playlistId }) => {
           <div key={track.id} className="w-96 shrink-0">
             <TrackReview
               track={track}
+              images={"album" in track ? track.album.images : source.images}
               playlistId={playlistId}
               onAdd={() => removeSong(track)}
               onRemove={() => removeSong(track)}
