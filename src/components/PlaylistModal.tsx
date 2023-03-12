@@ -23,7 +23,6 @@ export const PlaylistModal: React.FC<Props> = ({
     if (!open) return;
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        console.log("ESCAPING PL");
         onClose();
       }
     }

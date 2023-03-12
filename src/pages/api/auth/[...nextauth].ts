@@ -31,7 +31,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.SPOTIFY_CLIENT_SECRET,
       authorization: `https://accounts.spotify.com/authorize?scope=${scope}`,
       profile(profile) {
-        console.log({ profile });
         return {
           id: profile.id,
           name: profile.display_name,

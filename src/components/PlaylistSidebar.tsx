@@ -15,7 +15,6 @@ export const PlaylistSidebar: React.FC<Props> = ({
 }) => {
   const utils = trpc.useContext();
   const playlistId = playlist?.id ?? "";
-  console.log(playlist);
   const { data } = trpc.spotify.getPlaylistTracks.useQuery(playlistId, {
     enabled: !!playlistId,
   });
